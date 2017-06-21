@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>欢迎进入狼人杀网站</title>
+
+    <link rel="stylesheet" href="css/WebKill.css">
+    <link rel="stylesheet" href="css/head.css">
+    <style>
+        .section1 { background: url("img/index.png");
+            background-size: cover;
+        background-repeat: no-repeat;}
+        .section2 { background: url("img/星空.png");
+            background-size: cover;
+        background-repeat: no-repeat;}
+        .box{
+            position: absolute;
+            top: 1080px;
+            left: 35%;
+            z-index: 999;
+            width: 470px;
+            height: 215px;
+        }
+        img:hover{
+            transform: scale(1.1);
+        }
+    </style>
+    <script src="http://cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
+    <script src="http://cdn.dowebok.com/77/js/jquery.fullPage.min.js"></script>
+    <script>
+        $(function(){
+            $('#dowebok').fullpage({
+                menu:'#menu'
+            });
+        });
+    </script>
+</head>
+
+<body>
+<header class="top">
+    <div class="menu">
+        <article class="logo"></article>
+        <div class="link">
+            <a href="login.html" style=" position:relative;margin: 0px 60px 0px"><img src="img/登录.png">&nbsp;登录</a>
+            <a href="www.facebook.com" style=" position: relative; top: 4px;"><img src="img/FACEBOOK.png"></a>
+            <a href="www.facebook.com" style=" position: relative; top: 4px;"><img src="img/F.png"></a>
+            <a href="www.ins.com" style=" position: relative; top: 4px;"><img src="img/INS.png"></a>
+            <a href="www.qq.com" style=" position: relative; top: 4px;"><img src="img/QQ.png"></a>
+            <a href="www.weibo.com" style=" position: relative; top: 4px;"><img src="img/WEBO.png"></a>
+        </div>
+    </div>
+</header>
+<div id="dowebok">
+    <div class="section section1">
+        <div class="video">
+            <p>观看视频了解更多:</p>
+        </div>
+        <div class="text"><img src="img/text.png"></div>
+        <div id="container">
+            <div id="list" style="left: -480px">
+                <img src="img/video1.png" alt="1">
+                <img src="img/video1.png"alt="1">
+                <img src="img/video2.png"alt="2">
+                <img src="img/video3.png"alt="3">
+                <img src="img/video3.png"alt="3">
+            </div>
+            <a href="javascript:;" id="prev" class="arrow">&lt;</a>
+            <a href="javascript:;" id="next" class="arrow">&gt;</a>
+        </div>
+        <div id="buttons">
+            <span index="1" class="on"></span>
+            <span index="2"></span>
+            <span index="3"></span>
+        </div>
+    </div>
+    <div class="section section2">
+        <div class="box">
+            <div class="begin">
+                <a href="#"><img src="img/快速匹配.png"></a>
+            </div>
+            <div class="game">
+                <a href="wanfa.html"><img src="img/游戏%20玩法.png"></a>
+            </div>
+            <div class="create">
+               <a href="创建房间.html" onclick="a()"><img src="img/创建%20房间.png"></a>
+            </div>
+            <div class="join">
+                <a href="创建房间.html"><img src="img/加入%20房间.png"></a>
+            </div>
+            <div class="us">
+                <a href="us.html"><img src="img/关于我们.png"></a>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    window.onload=function () {
+        var container = document.getElementById('container');
+        var list = document.getElementById('list');
+        var buttons = document.getElementById('buttons').getElementsByTagName('span');
+        var prev = document.getElementById('prev');
+        var next = document.getElementById('next');
+        var index = 1;
+        var timer;
+
+        function animate(offset) {
+            //获取的是style.left，是相对左边获取距离，所以第一张图后style.left都为负值，
+            //且style.left获取的是字符串，需要用parseInt()取整转化为数字。
+            var newLeft = parseInt(list.style.left) + offset;
+            list.style.left = newLeft + 'px';
+            //无限滚动判断
+            if (newLeft > -480) {
+                list.style.left = -1440+ 'px';
+            }
+            if (newLeft < -1440) {
+                list.style.left = -480 + 'px';
+            }
+        }
+
+        function play() {
+            //重复执行的定时器
+            timer = setInterval(function() {
+                next.onclick();
+            }, 2000)
+        }
+
+        function stop() {
+            clearInterval(timer);
+        }
+
+        function buttonsShow() {
+            //将之前的小圆点的样式清除
+            for (var i = 0; i < buttons.length; i++) {
+                if (buttons[i].className == "on") {
+                    buttons[i].className = "";
+                }
+            }
+            //数组从0开始，故index需要-1
+            buttons[index - 1].className = "on";
+        }
+
+        prev.onclick = function() {
+            index -= 1;
+            if (index < 1) {
+                index = 3
+            }
+            buttonsShow();
+            animate(480);
+        };
+
+        next.onclick = function() {
+            //由于上边定时器的作用，index会一直递增下去，我们只有5个小圆点，所以需要做出判断
+            index += 1;
+            if (index > 3) {
+                index = 1
+            }
+            animate(-480);
+            buttonsShow();
+        };
+        for (var i = 0; i < buttons.length; i++) {
+            (function(i) {
+                buttons[i].onclick = function() {
+
+                    /*   这里获得鼠标移动到小圆点的位置，用this把index绑定到对象buttons[i]上，去谷歌this的用法  */
+                    /*   由于这里的index是自定义属性，需要用到getAttribute()这个DOM2级方法，去获取自定义index的属性*/
+                    var clickIndex = parseInt(this.getAttribute('index'));
+                    var offset = 480 * (index - clickIndex); //这个index是当前图片停留时的index
+                    animate(offset);
+                    index = clickIndex; //存放鼠标点击后的位置，用于小圆点的正常显示
+                    buttonsShow();
+                }
+            })(i)
+        }
+
+        container.onmouseover = stop;
+        container.onmouseout = play;
+        play();
+
+    }
+</script>
+
+
+</body>
+</html>
